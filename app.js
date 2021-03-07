@@ -3,9 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const PORT = process.env.PORT || 80
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const mongoose = require('mongoose')
+const registrRouter = require('./routes/post')
 
 const app = express();
 
@@ -21,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/reg', registrRouter),
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -38,5 +40,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000)
-module.exports = app;
+
+ async function start() {
+   await mongoose.connect("mongodb+srv://popov:1964197419952001@cluster0.opusj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+     useNewUrlParser: true,
+     useFindAndModify: true,
+   });
+  await app.listen(PORT)
+   module.exports = app;
+}
+
